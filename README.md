@@ -1,4 +1,4 @@
-# Hernandez-Del-Toro2019
+# An algorithm for onset detection
 Codes for the paper AN ALGORITHM FOR DETECTING THE ONSET OF LINGUISTIC SEGMENTS IN CONTINUOUS ELECTROENCEPHALOGRAM SIGNALS presented on MABEVA 2019
 
 Objective: Detect the onset of imagined words in continuous EEG signals
