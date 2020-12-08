@@ -1,4 +1,4 @@
-# An algorithm for onset detection
+# An algorithm for onset detection of linguistic segments in Continuous Electroencephalogram signals
 Codes for the paper AN ALGORITHM FOR DETECTING THE ONSET OF LINGUISTIC SEGMENTS IN CONTINUOUS ELECTROENCEPHALOGRAM SIGNALS presented on MABEVA 2019
 
 Objective: Detect the onset of imagined words in continuous EEG signals
