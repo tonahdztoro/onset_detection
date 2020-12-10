@@ -21,7 +21,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def extract_folds(subject, FeatureSet):
-    """Returns the train, test, and epoch folds"""
+    """Returns the train, test, and epoch folds from the .mat files"""
     
     #Set the dir path
     script_dir = os.path.dirname(__file__)
@@ -38,7 +38,9 @@ def extract_folds(subject, FeatureSet):
 
 
 
-def train_classifier(OnsetAccuracy, trainCorpusFolds, testCorpusFolds, testEpochFolds, k):
+def train_classifier(OnsetTPRs, trainCorpusFolds, testCorpusFolds, testEpochFolds, k):
+    """Evaluates the classifier of a given fold and a previous TPR.
+    Returns the sum of the previous TPR plus the TPR obtained"""
     #select data from the folds
     trainCorpus = np.array( trainCorpusFolds[k] );
     np.random.shuffle(trainCorpus);
@@ -106,80 +108,83 @@ def train_classifier(OnsetAccuracy, trainCorpusFolds, testCorpusFolds, testEpoch
                 break;
     
     OnsetTPR = OnsetTP/len(events_real);
-    OnsetAccuracy = OnsetAccuracy + OnsetTPR;
+    OnsetTPRs = OnsetTPRs + OnsetTPR;
     
-    return OnsetAccuracy
+    return OnsetTPRs
 
   
-def evaluate_subject(OnsetAccuracies, subject, TETR, FS):
+def evaluate_subject(subject, TETR, FS):
+    """Evaluates the true positive rate of a given subject for 5 folds. 
+    Returns the TPR of that subject"""
     trainCorpusFolds, testCorpusFolds, testEpochFolds = extract_folds(subject, 'Hurst')
-    OnsetAccuracy = 0;
+    OnsetTPRs = 0;
     
     for k in range(5):
-        OnsetAccuracy = train_classifier(OnsetAccuracy, trainCorpusFolds, testCorpusFolds, testEpochFolds, k)
+        OnsetTPRs = train_classifier(OnsetTPRs, trainCorpusFolds, testCorpusFolds, testEpochFolds, k)
         
-    OnsetAccuracy = OnsetAccuracy/5;
-    OnsetAccuracies = np.append(OnsetAccuracies, OnsetAccuracy);
+    OnsetTPR = OnsetTPRs/5;
     
-    return OnsetAccuracies
+    return OnsetTPR
     
 
 def evaluate_datasets(TETR,FS):
-    subjects_TPR = np.array([], dtype = float); #average accuracies of each subject
+    """Evaluates the whole datasets of each subject given a TETR and a feature set
+    Returns the true positive rates for each subject and the mean of all of them"""
+    subjects_TPR = np.zeros((28));
     
     for subject in range(27):
-        subjects_TPR = evaluate_subject(subjects_TPR, subject, TETR, FS)
+        subjects_TPR[subject] = evaluate_subject(subject, TETR, FS)
     
-    subjects_TPR = np.append(subjects_TPR, np.mean(subjects_TPR))
+    subjects_TPR[27] = np.mean(subjects_TPR)
     subjects_TPR = np.around(subjects_TPR,2)
     
     return subjects_TPR
 
-#%%
-
-TETR = 3*(128)
-#TETR = 4*(128)
-FS = ['Hurst', 'Stat']
-
-
-Results1 = evaluate_datasets(TETR,FS[0])
-Results2 = evaluate_datasets(TETR,FS[1])
-
-
-
-#%%
-fig, ax = plt.subplots()
-index = np.arange(28)
-bar_width = 0.4
-opacity = 0.6
-
-rects1 = plt.bar(index, Results1[0], bar_width,
-                 alpha=opacity,
-                 color='b',
-                 label='Feature set 1')
-
-rects2 = plt.bar(index + bar_width, Results2[0], bar_width,
-                 alpha=opacity,
-                 color='g',
-                 label='feature set 2')
-
-plt.xlabel('Subject')
-plt.ylabel('TPR')
-plt.title('TPR with TETR = 3s')
-plt.xticks(index + bar_width,
-           ('1','','','','5','','','','','10','','','','','15','','','','','20','','','','','25','','','Mean'))
-plt.ylim(0.5, 1.01)
-plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.0), fancybox=True, shadow=True, ncol=1)
-plt.tight_layout()
-plt.show()
+def create_figures(Results,TETR_str):
+    """Create figures to compare the 2 fueature sets with the given results using a TETR"""
+    fig, ax = plt.subplots()
+    index = np.arange(28)
+    bar_width = 0.4
+    opacity = 0.6
+    
+    plt.bar(index, Results[0], bar_width, alpha=opacity, color='b', label='Feature set 1')
+    plt.bar(index + bar_width, Results[1], bar_width, alpha=opacity, color='g', label='Feature set 2')
+    
+    plt.xlabel('Subject')
+    plt.ylabel('TPR')
+    plt.title('TPR with TETR =' +TETR_str)
+    plt.xticks(index + bar_width,
+               ('1','','','','5','','','','','10','','','','','15','','','','','20','','','','','25','','','Mean'))
+    plt.ylim(0.5, 1.01)
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.0), fancybox=True, shadow=True, ncol=1)
+    plt.tight_layout()
+    
+    #Saves the figure int he figures folder of the main path
+    script_dir = os.path.dirname(__file__)
+    rel_path = 'figures/' + TETR_str + '.pdf'
+    file_path = os.path.join(script_dir, rel_path)
+    plt.savefig(file_path, dpi=400, format='pdf', bbox_inches="tight")
+    
+    plt.show()
+    return
 
 
 
 
-
-
-
-
-
+if __name__ == '__main__':
+    FS = ['Hurst', 'Stat']
+    TETR_str = ['3s','4s']
+    
+    TETR = 3*128
+    Results1 = evaluate_datasets(TETR,FS[0])
+    Results2 = evaluate_datasets(TETR,FS[1])
+    Results = np.vstack([Results1,Results2])
+    create_figures(Results,TETR_str[0])
+    
+    TETR = 4*128
+    Results1 = evaluate_datasets(TETR,FS[0])
+    Results2 = evaluate_datasets(TETR,FS[1])
+    Results = np.vstack([Results1,Results2])
+    create_figures(Results,TETR_str[1])
 
 
