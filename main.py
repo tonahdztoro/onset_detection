@@ -7,7 +7,7 @@ Code for the paper
 "An algorithm for onset detection of linguistic segments in Continuous Electroencephalogram signals"
 presented on the 11th MAVEBA
 
-arXiv: 
+arXiv: 2012.06075
 doi: 10.36253/978-88-6453-961-4
 """
 
