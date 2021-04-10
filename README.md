@@ -9,7 +9,9 @@ Evaluation Metric: Timing Error Tolerance Region (TETR) <br>
 
 
 Cite as:
-T. Hernández-Del-Toro, C.A. Reyes-García, An algorithm for detecting the onset
-of linguistic segments in continuous electroencephalogram signals, in: Models
-and Analysis of Vocal Emissions for Biomedical Applications, MAVEBA, Firenze
-University Press, Florence, Italy, 2019, pp. 249–252, http://dx.doi.org/10.36253/978-88-6453-961-4.
+Tonatiuh Hernández-Del-Toro, Carlos A. Reyes-García, <br>
+An algorithm for detecting the onset of linguistic segments in continuous electroencephalogram signals, <br>
+in: Models and Analysis of Vocal Emissions for Biomedical Applications, MAVEBA, <br>
+Firenze University Press, Florence, Italy, 2019, <br>
+pp. 249–252, <br>
+http://dx.doi.org/10.36253/978-88-6453-961-4.
