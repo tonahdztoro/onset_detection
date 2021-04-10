@@ -14,4 +14,4 @@ An algorithm for detecting the onset of linguistic segments in continuous electr
 in: Models and Analysis of Vocal Emissions for Biomedical Applications, MAVEBA, <br>
 Firenze University Press, Florence, Italy, 2019, <br>
 pp. 249–252, <br>
-http://dx.doi.org/10.36253/978-88-6453-961-4.
+http://dx.doi.org/10.36253/978-88-6453-961-4
